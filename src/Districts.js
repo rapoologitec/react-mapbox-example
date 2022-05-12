@@ -1,24 +1,29 @@
 import React, { useState, useEffect, useRef } from "react";
 import mnDistricts from "./data/mn/mn-districts.geojson";
+import melDistricts from "./data/mn/psma_melb_boundary_with_id.geojson";
 import mapboxgl from 'mapbox-gl';
+import geojsonfile from "./data/mn/psma_melb_boundary_with_id.geojson";
+
 
 function Districts(props) {
 
     //Assign the Mapbox token from the environment variable set in .env
     mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_KEY;
 
+    const geojsonfile = require('./data/mn/psma_melb_boundary_with_id.geojson')
+
     const mapContainer = useRef(null);
 
-    const [long, setLong] = useState(-94.503809);
-    const [lat, setLat] = useState(46.443226);
-    const [zoom, setZoom] = useState(4.5);
+    const [long, setLong] = useState(144.96229458671036);
+    const [lat, setLat] = useState(-37.81231107895544);
+    const [zoom, setZoom] = useState(7);
 
     const [hoveredDistrict, _setHoveredDistrict] = useState(null);
     const hoveredDistrictRef = useRef(hoveredDistrict);
 
     const setHoveredDistrict = data => {
         hoveredDistrictRef.current = data;
-        _setHoveredDistrict(data);
+        _setHoveredDistrict(data)
     };
 
     useEffect(() => {
@@ -38,7 +43,7 @@ function Districts(props) {
 
             map.addSource('district-source', {
                 'type': 'geojson',
-                'data': mnDistricts
+                'data': melDistricts
             });
 
             map.addLayer({
@@ -47,40 +52,14 @@ function Districts(props) {
                 'source': 'district-source',
                 'layout': {},
                 'paint': {
-                    'fill-color': [
-                        'match',
-                        ['get', 'CD116FP'],
-                        '01',
-                        '#5AA5D7',
-                        '02',
-                        '#02735E',
-                        '03',
-                        '#00E0EF',
-                        '04',
-                        '#84D0D9',
-                        '05',
-                        '#202359',
-                        '06',
-                        '#CE7529',
-                        '07',
-                        '#00AE6C',
-                        '08',
-                        '#0056A3',
-                        /* other */ '#ffffff'
-                    ],
-                    'fill-opacity': [
-                        'case',
-                        ['boolean', ['feature-state', 'hover'], false],
-                        .8,
-                        0.5
-                    ]
+                    'fill-color': '#f08',
+                    'fill-opacity': 0.4
                 }
             });
 
             map.on('mousemove', 'district-layer', function (e) {
                 if (e.features.length > 0) {
                     if (hoveredDistrictRef.current && hoveredDistrictRef.current > -1) {
-
                         map.setFeatureState(
                             { source: 'district-source', id: hoveredDistrictRef.current },
                             { hover: false }
@@ -120,7 +99,6 @@ function Districts(props) {
             });
 
         });
-
     }, []);
 
     return (
