@@ -3,6 +3,7 @@ import mnDistricts from "./data/mn/mn-districts.geojson";
 import melDistricts from "./data/mn/psma_melb_boundary_with_id.geojson";
 import mapboxgl from 'mapbox-gl';
 import geojsonfile from "./data/mn/psma_melb_boundary_with_id.geojson";
+import {Navigate} from "react-router-dom";
 
 
 function Districts(props) {
@@ -17,17 +18,34 @@ function Districts(props) {
     const [long, setLong] = useState(144.96229458671036);
     const [lat, setLat] = useState(-37.81231107895544);
     const [zoom, setZoom] = useState(7);
+    const [idJson, setIdJson] = useState(null);
 
     const [hoveredDistrict, _setHoveredDistrict] = useState(null);
+    const [paint, setPaint] = useState({
+        'fill-color': '#f08',
+        'fill-opacity': 0.4
+    })
     const hoveredDistrictRef = useRef(hoveredDistrict);
+    const [jump, setJump] = useState(null)
 
-    const setHoveredDistrict = data => {
+    let setHoveredDistrict = data => {
         hoveredDistrictRef.current = data;
-        _setHoveredDistrict(data)
+        if (idJson){
+            _setHoveredDistrict(idJson[data])
+        }
+
     };
 
     useEffect(() => {
+        fetch('http://localhost:5000/suburb_id').then(
+            response => response.json()
+        ).then( (data)=>{
+                setIdJson(data);
+            }
+        )
+    }, [])
 
+    useEffect(() => {
         let map = new mapboxgl.Map({
             container: mapContainer.current,
             style: "mapbox://styles/mapbox/light-v10",
@@ -51,10 +69,7 @@ function Districts(props) {
                 'type': 'fill',
                 'source': 'district-source',
                 'layout': {},
-                'paint': {
-                    'fill-color': '#f08',
-                    'fill-opacity': 0.4
-                }
+                'paint': paint
             });
 
             map.on('mousemove', 'district-layer', function (e) {
@@ -98,11 +113,30 @@ function Districts(props) {
                 setZoom(map.getZoom().toFixed(2));
             });
 
+            map.on('click', 'district-layer', (e)=> {
+                    console.log(hoveredDistrictRef.current)
+                    setJump(hoveredDistrictRef.current)
+
+                }
+
+            )
+
         });
-    }, []);
+    }, [idJson, paint]);
+
+    function navigator(){
+        if (jump){
+            return(
+                <div>
+                    <Navigate to={"/suburb/" + jump}/>
+                </div>
+            )
+        }
+    }
 
     return (
         <div className="district-map-wrapper">
+            {navigator()}
 
             <div className="info">
                 Current hovered district: <strong>{hoveredDistrict ? hoveredDistrict : ""}</strong>
