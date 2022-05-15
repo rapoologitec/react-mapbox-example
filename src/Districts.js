@@ -1,10 +1,11 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, {useState, useEffect, useRef, useContext} from "react";
 import mnDistricts from "./data/mn/mn-districts.geojson";
 import melDistricts from "./data/mn/psma_melb_boundary_with_id.geojson";
 import mapboxgl from 'mapbox-gl';
 import geojsonfile from "./data/mn/psma_melb_boundary_with_id.geojson";
 import {Navigate} from "react-router-dom";
 import {Alert, Button} from "react-bootstrap";
+import {EndPointContext} from "./App";
 
 
 function Districts(props) {
@@ -12,7 +13,6 @@ function Districts(props) {
     //Assign the Mapbox token from the environment variable set in .env
     mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_KEY;
 
-    const geojsonfile = require('./data/mn/psma_melb_boundary_with_id.geojson')
 
     const mapContainer = useRef(null);
 
@@ -27,6 +27,10 @@ function Districts(props) {
     const [colorArr, setColorArr] = useState(null)
     const refmap = useRef(null)
 
+    const URLEndContext = useContext(EndPointContext)
+    const idURL = URLEndContext + '/suburb_id'
+    const colorURL = URLEndContext + "/get_colour"
+
     let setHoveredDistrict = data => {
         hoveredDistrictRef.current = data;
         if (idJson){
@@ -36,13 +40,13 @@ function Districts(props) {
     };
 
     useEffect(() => {
-        fetch('http://localhost:5000/suburb_id').then(
+        fetch(idURL).then(
             response => response.json()
         ).then( (data)=>{
                 setIdJson(data);
             }
         )
-        fetch("http://localhost:5000/get_colour").then(
+        fetch(colorURL).then(
             response => response.json()).then(
                 (data) => {
                     let colorArray = [];

@@ -9,7 +9,9 @@ import SuburbDetail from "./SuburbDetail";
 export const EndPointContext = React.createContext()
 
 function App() {
-    const URLEnd = "http://localhost:5000"
+    const URLEnd = "172.26.129.132"
+
+    //const URLEnd = "http://localhost:5000"
 
   return (
     <div className="app">

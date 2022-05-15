@@ -6,8 +6,8 @@ function Home(){
     return(
         <div>
             <header className="app-header">
-                <h1>Minnesota Congressional Districts</h1>
-                <h3>Data as of 2019</h3>
+                <h1>Are We Happy?</h1>
+                <h3>Happy Map of Greater Melbourne Area</h3>
             </header>
             <div className="body">
                 <Districts />
