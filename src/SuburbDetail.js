@@ -61,6 +61,9 @@ function SuburbDetail (props) {
             }
             return(
                 <div>
+                    {/*<PieChart width = {500} height={500}>*/}
+                    {/*    <Pie data*/}
+                    {/*</PieChart>*/}
                 </div>
             )
         }

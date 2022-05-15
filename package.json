@@ -15,7 +15,8 @@
     "react-dom": "^16.13.1",
     "react-plotly.js": "^2.5.1",
     "react-router-dom": "^6.3.0",
-    "react-scripts": "3.4.1"
+    "react-scripts": "3.4.1",
+    "recharts": "^2.1.9"
   },
   "scripts": {
     "start": "react-scripts start",
