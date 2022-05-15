@@ -1,5 +1,6 @@
 import React from "react";
 import Districts from "./Districts";
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 function Home(){
     return(
@@ -11,16 +12,6 @@ function Home(){
             <div className="body">
                 <Districts />
             </div>
-            <footer>
-                <a
-                    className="App-link"
-                    href="https://www.census.gov/geographies/mapping-files/time-series/geo/tiger-line-file.html"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                >
-                    Data provided by the United States Census.
-                </a>
-            </footer>
         </div>
     )
 }

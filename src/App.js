@@ -1,6 +1,7 @@
 import React from 'react';
 import Districts from "./Districts";
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 import Home from "./Home";
 import SuburbDetail from "./SuburbDetail";

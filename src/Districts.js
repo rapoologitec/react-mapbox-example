@@ -4,6 +4,7 @@ import melDistricts from "./data/mn/psma_melb_boundary_with_id.geojson";
 import mapboxgl from 'mapbox-gl';
 import geojsonfile from "./data/mn/psma_melb_boundary_with_id.geojson";
 import {Navigate} from "react-router-dom";
+import {Alert, Button} from "react-bootstrap";
 
 
 function Districts(props) {
@@ -21,12 +22,10 @@ function Districts(props) {
     const [idJson, setIdJson] = useState(null);
 
     const [hoveredDistrict, _setHoveredDistrict] = useState(null);
-    const [paint, setPaint] = useState({
-        'fill-color': '#f08',
-        'fill-opacity': 0.4
-    })
     const hoveredDistrictRef = useRef(hoveredDistrict);
     const [jump, setJump] = useState(null)
+    const [colorArr, setColorArr] = useState(null)
+    const refmap = useRef(null)
 
     let setHoveredDistrict = data => {
         hoveredDistrictRef.current = data;
@@ -43,7 +42,45 @@ function Districts(props) {
                 setIdJson(data);
             }
         )
+        fetch("http://localhost:5000/get_colour").then(
+            response => response.json()).then(
+                (data) => {
+                    let colorArray = [];
+                    colorArray.push("match");
+                    colorArray.push(["get", "id"])
+                    for (const key in data){
+                        if(data.hasOwnProperty(key)){
+                            colorArray.push(key.toString())
+                            let ColorString = "#"
+                            let rstr = data[key]["red"].toString(16);
+                            let gstr = data[key]["green"].toString(16);
+                            let bstr = data[key]["blue"].toString(16);
+                            if (rstr.length === 1){
+                                rstr = "0" + rstr
+                            }
+                            if (gstr.length === 1){
+                                gstr = "0" + gstr
+                            }
+                            if (bstr.length === 1){
+                                bstr = "0" + bstr
+                            }
+                            ColorString = ColorString + rstr + gstr + bstr
+                            colorArray.push(ColorString)
+                        }
+                    }
+                    colorArray.push("#808080")
+                    setColorArr(colorArray)
+                    console.log(colorArray)
+                }
+        )
     }, [])
+
+    useEffect(() => {
+        if (refmap.current && colorArr) {
+            refmap.current.setPaintProperty('district-layer', 'fill-color', colorArr)
+            refmap.current.setPaintProperty('district-layer', 'fill-opacity', 0.8)
+        }
+    }, [refmap, colorArr])
 
     useEffect(() => {
         let map = new mapboxgl.Map({
@@ -69,7 +106,10 @@ function Districts(props) {
                 'type': 'fill',
                 'source': 'district-source',
                 'layout': {},
-                'paint': paint
+                'paint': {
+                    'fill-color': "#808080",
+                    'fill-opacity': 0.4
+                }
             });
 
             map.on('mousemove', 'district-layer', function (e) {
@@ -121,8 +161,9 @@ function Districts(props) {
 
             )
 
+        refmap.current = map
         });
-    }, [idJson, paint]);
+    }, [idJson]);
 
     function navigator(){
         if (jump){
@@ -134,17 +175,26 @@ function Districts(props) {
         }
     }
 
+
+
+
     return (
         <div className="district-map-wrapper">
             {navigator()}
 
             <div className="info">
                 Current hovered district: <strong>{hoveredDistrict ? hoveredDistrict : ""}</strong>
+                <Alert key={"primary"} variant={"primary"}>
+                    Click on map to view suburb detail!
+                </Alert>
             </div>
+
             <div id="districtDetailMap" className="map">
                 <div style={{ height: "100%" }} ref={mapContainer}>
                 </div>
             </div>
+
+
         </div>
     );
 }
