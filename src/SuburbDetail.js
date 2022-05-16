@@ -84,6 +84,7 @@ function SuburbDetail (props) {
     }
 
     function presentData(){
+        // todo
         return (
             <div>
                 {()=>{
