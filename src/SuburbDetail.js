@@ -6,7 +6,7 @@ import * as PropTypes from "prop-types";
 import {ResponsivePie} from "@nivo/pie";
 import {height} from "plotly.js/src/plots/layout_attributes";
 import {ResponsiveScatterPlot} from "@nivo/scatterplot";
-import {Button} from "react-bootstrap";
+import {Alert, Button} from "react-bootstrap";
 
 function ScatterChart(props) {
     return null;
@@ -31,6 +31,7 @@ function SuburbDetail (props) {
     const [dataJson, setDataJson] = useState(null)
     const getNameUrl = URLEndContext + '/get_name/' + id.toString()
     const getDetailUrl = URLEndContext + '/detail_data/' + id.toString()
+    let noRenderList = []
 
     useEffect(()=>{
         fetch(getNameUrl).then(
@@ -60,12 +61,64 @@ function SuburbDetail (props) {
             )
         }
         else{
+            if (dataJson.hasOwnProperty('error')){
+                return (
+                    <div>
+                        <h2>
+                            Sorry, No data for this suburb.
+                        </h2>
+                    </div>
+                )
+            }
             return (
                 <div>
                     {drawPieChart()}
+                    {presentData()}
                     {drawBirthrate()}
                     {drawSalary()}
                     {drawUnemployment()}
+                    {getMessage()}
+                </div>
+            )
+        }
+    }
+
+    function presentData(){
+        return (
+            <div>
+                {()=>{
+                    if (dataJson.hasOwnProperty("this_happy")){
+                        return(<h3>
+                            this_happy is {dataJson["this_happy"]}
+                        </h3>)
+                    }
+                }}
+                {()=>{
+                    if (dataJson.hasOwnProperty("avg_happy")){
+                        return(<h3>
+                            this_happy is {dataJson["avg_happy"]}
+                        </h3>)
+                    }
+                }}
+                {()=>{
+                    if (dataJson.hasOwnProperty("old_happy")){
+                        return(<h3>
+                            this_happy is {dataJson["old_happy"]}
+                        </h3>)
+                    }
+                }}
+            </div>
+        )
+    }
+
+
+    function getMessage(){
+        if (noRenderList.length > 0){
+            return(
+                <div>
+                    <Alert>
+                        The graph(s) {noRenderList.toString()} can't be drawn due to lack of data.
+                    </Alert>
                 </div>
             )
         }
@@ -243,6 +296,9 @@ function SuburbDetail (props) {
             )
 
         }
+        else{
+            noRenderList.push("Birthrate")
+        }
     }
 
     function drawSalary(){
@@ -331,6 +387,9 @@ function SuburbDetail (props) {
             )
 
         }
+        else{
+            noRenderList.push("Salary")
+        }
     }
 
     function drawUnemployment(){
@@ -418,6 +477,9 @@ function SuburbDetail (props) {
                 </div>
             )
 
+        }
+        else{
+            noRenderList.push("Unemployment")
         }
     }
 
