@@ -97,13 +97,13 @@ function SuburbDetail (props) {
 
     function fetchOne(property) {
         if (dataJson.hasOwnProperty(property)) {
-            let datajson = {
-                this_happy: "this",
-                old_happy: "old",
-                avg_happy:"avg"
+            let nameJson = {
+                this_happy: "Current positive rate",
+                old_happy: "Historical positive rate",
+                avg_happy:"Current average positive rate"
             }
             return (<h3>
-                {dataJson[property]} is {dataJson[property]}
+                {nameJson[property]} : {dataJson[property].toFixed(3)}
             </h3>)
         }
     }
