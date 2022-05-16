@@ -87,29 +87,19 @@ function SuburbDetail (props) {
         // todo
         return (
             <div>
-                {()=>{
-                    if (dataJson.hasOwnProperty("this_happy")){
-                        return(<h3>
-                            this_happy is {dataJson["this_happy"]}
-                        </h3>)
-                    }
-                }}
-                {()=>{
-                    if (dataJson.hasOwnProperty("avg_happy")){
-                        return(<h3>
-                            this_happy is {dataJson["avg_happy"]}
-                        </h3>)
-                    }
-                }}
-                {()=>{
-                    if (dataJson.hasOwnProperty("old_happy")){
-                        return(<h3>
-                            this_happy is {dataJson["old_happy"]}
-                        </h3>)
-                    }
-                }}
+
+                {fetchOne("this_happy")}
+                {fetchOne("avg_happy")}
+                {fetchOne("old_happy")}
             </div>
         )
+    }
+
+    function fetchOne(property){
+        if (dataJson.hasOwnProperty(property)){
+            return(<h3>
+                this_happy is {dataJson[property]}
+            </h3>)
     }
 
 
