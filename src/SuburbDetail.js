@@ -95,11 +95,17 @@ function SuburbDetail (props) {
         )
     }
 
-    function fetchOne(property){
-        if (dataJson.hasOwnProperty(property)){
-            return(<h3>
-                this_happy is {dataJson[property]}
+    function fetchOne(property) {
+        if (dataJson.hasOwnProperty(property)) {
+            let datajson = {
+                this_happy: "this",
+                old_happy: "old",
+                avg_happy:"avg"
+            }
+            return (<h3>
+                {dataJson[property]} is {dataJson[property]}
             </h3>)
+        }
     }
 
 
